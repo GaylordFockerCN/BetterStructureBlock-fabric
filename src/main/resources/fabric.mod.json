@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "better_structure_block",
+	"version": "${version}",
+	"name": "better_structure_block",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"accessWidener": "better_structure_block.accesswidener",
+	"authors": [
+		"P1nero"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/better_structure_block/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.p1nero.bsb.BetterStructureBlock"
+		]
+	},
+	"mixins": [
+		"better_structure_block.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
