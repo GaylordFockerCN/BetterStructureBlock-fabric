@@ -1,14 +1,13 @@
 package com.p1nero.bsb.mixin;
 
 import com.p1nero.bsb.BetterStructureBlock;
-import com.p1nero.bsb.Config;
+import com.p1nero.bsb.BetterStructureConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.block.enums.StructureBlockMode;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.StructureBlockScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.c2s.play.UpdateStructureBlockC2SPacket;
 import net.minecraft.util.BlockMirror;
@@ -66,10 +65,11 @@ public abstract class ClientStructureBlockBlockEntityMixin extends BlockEntity {
     @Shadow public abstract float getIntegrity();
 
     /**
-     * 核心就在这里，load的时候被限制了大小！！{@link StructureBlockBlockEntity#readNbt(NbtCompound)}
+     * 核心就在这里，load的时候被限制了大小{@link StructureBlockBlockEntity#readNbt(NbtCompound)}
+     * 不知为何在服务端调用会没反应
      */
     @Inject(at = @At("TAIL"), method = "readNbt")
-    private void injectedRead(NbtCompound nbt, CallbackInfo ci) {
+    private void betterStructureBlock$readNbt(NbtCompound nbt, CallbackInfo ci) {
         int i = nbt.getInt("posX");
         int j = nbt.getInt("posY");
         int k = nbt.getInt("posZ");
@@ -83,23 +83,16 @@ public abstract class ClientStructureBlockBlockEntityMixin extends BlockEntity {
             firstLoad = false;
         }
 
-        if(world != null && !loaded && Config.LOAD_IMMEDIATELY){
+        if(world != null && !loaded && BetterStructureConfig.LOAD_IMMEDIATELY){
             Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(new UpdateStructureBlockC2SPacket(getPos(), StructureBlockBlockEntity.Action.LOAD_AREA, getMode(), getTemplateName(), getOffset(), getSize(), getMirror(), getRotation(), getMetadata(), shouldIgnoreEntities(), shouldShowAir(), shouldShowBoundingBox(), getIntegrity(), getSeed()));
             BetterStructureBlock.LOGGER.info("post load request : {} ", getTemplateName());
             loaded = true;
-        }
-
-    }
-
-    @Unique
-    private void betterStructureBlock$load(BlockEntity entity){
-        if(entity instanceof StructureBlockBlockEntity structureBlockBlockEntity){
         }
     }
 
 
     @Inject(at = @At("TAIL"), method = "writeNbt")
-    private void injectedWrite(NbtCompound nbt, CallbackInfo ci) {
+    private void betterStructureBlock$writeNbt(NbtCompound nbt, CallbackInfo ci) {
         nbt.putBoolean("loaded", loaded);
     }
 }

@@ -1,7 +1,7 @@
 package com.p1nero.bsb.mixin;
 
 import com.p1nero.bsb.BetterStructureBlock;
-import com.p1nero.bsb.Config;
+import com.p1nero.bsb.BetterStructureConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
@@ -27,7 +27,7 @@ public class ServerPlayNetWorkHandlerMixin {
      */
     @Inject(method = "onUpdateStructureBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/server/world/ServerWorld;)V", shift = At.Shift.AFTER), cancellable = true)
     private void injected(UpdateStructureBlockC2SPacket packet, CallbackInfo ci) {
-        if (this.player.isCreativeLevelTwoOp() || Config.LOAD_IMMEDIATELY) {
+        if (this.player.isCreativeLevelTwoOp() || BetterStructureConfig.LOAD_IMMEDIATELY) {
             BlockPos blockPos = packet.getPos();
             BlockState blockState = this.player.getWorld().getBlockState(blockPos);
             BlockEntity blockEntity = this.player.getWorld().getBlockEntity(blockPos);
@@ -56,11 +56,11 @@ public class ServerPlayNetWorkHandlerMixin {
                         if (!structureBlockBlockEntity.isStructureAvailable()) {
                             this.player.sendMessage(Text.translatable("structure_block.load_not_found", new Object[]{string}), false);
                         } else if (structureBlockBlockEntity.loadStructure(this.player.getServerWorld())) {
-                            if (!Config.DISABLE_LOAD_MESSAGE) {
+                            if (!BetterStructureConfig.DISABLE_LOAD_MESSAGE) {
                                 this.player.sendMessage(Text.translatable("structure_block.load_success", new Object[]{string}), false);
                             }
                         } else {
-                            if (Config.LOAD_IMMEDIATELY) {
+                            if (BetterStructureConfig.LOAD_IMMEDIATELY) {
                                 structureBlockBlockEntity.loadStructure(this.player.getServerWorld());
                                 BetterStructureBlock.LOGGER.info("try to load structure block AGAIN on server: {}", ((StructureBlockBlockEntity) blockEntity).getTemplateName());
                             } else {
