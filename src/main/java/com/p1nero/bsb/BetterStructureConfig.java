@@ -13,8 +13,8 @@ import java.io.IOException;
 
 public class BetterStructureConfig {
     public static boolean LOAD_IMMEDIATELY = false;
-    public static boolean DISABLE_LOAD_MESSAGE = true;
-    public static boolean DESTROY_AFTER_LOAD = true;
+    public static boolean DISABLE_LOAD_MESSAGE = false;
+    public static boolean DESTROY_AFTER_LOAD = false;
     public static final String JSON = BetterStructureBlock.MOD_ID + ".json";
 
     public static final Logger LOGGER = LoggerFactory.getLogger("better_structure_block");
